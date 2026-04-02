@@ -1,1 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0d4a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Digital Khata | ڈیجیٹل کھاتہ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #0d4a2e;
+  --green-mid: #166840;
+  --green-light: #1d8a52;
+  --gold: #c8a84b;
+  --gold-light: #e8c96e;
+  --cream: #fdf8ee;
+  --cream-dark: #f2ead6;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --red: #c0392b;
+  --red-light: #e74c3c;
+  --blue: #1a5276;
+  --white: #ffffff;
+  --shadow: 0 2px 16px rgba(13,74,46,0.13);
+  --shadow-lg: 0 8px 32px rgba(13,74,46,0.18);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --font-en: 'Lato', sans-serif;
+  --font-ur: 'Noto Nastaliq Urdu', 'Amiri', serif;
+  --font-display: 'Cinzel', serif;
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-en);
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+body.lang-ur { font-family: var(--font-ur); }
+body.lang-ur input, body.lang-ur textarea, body.lang-ur select { font-family: var(--font-ur); }
 
+.pattern-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%230d4a2e' stroke-width='1.5'/%3E%3Cpath d='M30 15L45 30L30 45L15 30Z' fill='none' stroke='%230d4a2e' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='5' fill='none' stroke='%230d4a2e' stroke-width='1'/%3E%3C/svg%3E");
+}
+
+.screen { display: none; min-height: 100dvh; position: relative; z-index: 1; }
+.screen.active { display: flex; flex-direction: column; }
+
+#screen-na {
+  background: var(--green);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 24px; text-align: center; gap: 20px;
+}
+#screen-na .logo { font-family: var(--font-display); color: var(--gold); font-size: 2.2rem; letter-spacing: 2px; }
+#screen-na .lock-icon { font-size: 4rem; }
+#screen-na h2 { color: var(--white); font-family: var(--font-display); font-size: 1.5rem; }
+#screen-na p { color: rgba(255,255,255,0.72); font-size: 0.95rem; line-height: 1.7; max-width: 320px; }
+
+.app-header {
+  background: var(--green);
+  padding: 0 16px;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.app-header .header-left { display: flex; align-items: center; gap: 10px; }
+.app-header .back-btn {
+  background: rgba(255,255,255,0.15); border: none;
+  color: var(--white); width: 38px; height: 38px;
+  border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+}
+.app-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+.header-title { font-family: var(--font-display); color: var(--gold); font-size: 1.2rem; letter-spacing: 1px; }
+.header-title.shop-name { font-size: 1rem; color: var(--white); font-family: var(--font-en); font-weight: 700; letter-spacing: 0; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.lang-ur .header-title.shop-name { font-family: var(--font-ur); }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  background: rgba(255,255,255,0.12); border: none;
+  color: var(--white); min-width: 38px; height: 38px;
+  border-radius: 19px; cursor: pointer; font-size: 0.82rem; font-weight: 700;
+  padding: 0 10px; letter-spacing: 0.5px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition), transform var(--transition);
+  white-space: nowrap;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.22); transform: scale(1.04); }
+.lang-btn { font-size: 0.78rem; gap: 4px; }
+.settings-btn { font-size: 1.3rem; min-width: 38px; width: 38px; }
+
+#offline-banner {
+  background: #7f4a00; color: var(--white);
+  text-align: center; padding: 8px 16px; font-size: 0.85rem;
+  display: none; position: sticky; top: 62px; z-index: 99;
+  animation: slideDown 0.3s ease;
+}
+#offline-banner.show { display: block; }
+@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+#backup-reminder {
+  background: linear-gradient(135deg, #1a4a2a, #0d4a2e);
+  border: 1px solid var(--gold); border-radius: var(--radius-sm);
+  margin: 12px 16px 0; padding: 12px 14px;
+  display: none; flex-direction: row; align-items: center; gap: 10px;
+  animation: fadeIn 0.4s ease;
+}
+#backup-reminder.show { display: flex; }
+#backup-reminder .backup-text { color: var(--cream); font-size: 0.85rem; flex: 1; line-height: 1.5; }
+#backup-reminder .backup-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.btn-backup-now, .btn-dismiss {
+  border: none; border-radius: 20px; cursor: pointer; font-size: 0.78rem; font-weight: 700;
+  padding: 6px 12px; transition: all var(--transition);
+}
+.btn-backup-now { background: var(--gold); color: var(--green); }
+.btn-backup-now:hover { background: var(--gold-light); }
+.btn-dismiss { background: rgba(255,255,255,0.15); color: var(--white); }
+.btn-dismiss:hover { background: rgba(255,255,255,0.25); }
+
+.total-card {
+  background: linear-gradient(135deg, var(--green), var(--green-mid));
+  margin: 16px; border-radius: var(--radius);
+  padding: 20px 22px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.total-card::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%; border: 2px solid rgba(200,168,75,0.25);
+}
+.total-card::after {
+  content: ''; position: absolute; top: -10px; right: -10px;
+  width: 80px; height: 80px;
+  border-radius: 50%; border: 2px solid rgba(200,168,75,0.15);
+}
+.total-card .label { color: rgba(255,255,255,0.7); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+.total-card .amount { color: var(--gold); font-size: 2.2rem; font-weight: 700; font-family: var(--font-display); letter-spacing: 1px; }
+.total-card .customer-count { color: rgba(255,255,255,0.6); font-size: 0.8rem; margin-top: 6px; }
+body.lang-ur .total-card .label { letter-spacing: 0; }
+body.lang-ur .total-card .amount { font-family: var(--font-ur); font-size: 1.9rem; }
+
+.search-wrap { margin: 4px 16px 12px; position: relative; }
+.search-input {
+  width: 100%; height: 48px; padding: 0 48px 0 44px;
+  border: 1.5px solid var(--cream-dark); border-radius: 24px;
+  background: var(--white); color: var(--text); font-size: 0.95rem;
+  outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+  font-family: inherit;
+}
+.search-input:focus { border-color: var(--green-light); box-shadow: 0 0 0 3px rgba(22,104,64,0.12); }
+.search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 1.1rem; pointer-events: none;
+}
+html[dir="rtl"] .search-icon { left: auto; right: 14px; }
+html[dir="rtl"] .search-input { padding: 0 44px 0 48px; }
+.mic-btn {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px; border-radius: 50%; border: none;
+  background: var(--green); color: var(--white); cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition), transform var(--transition);
+}
+html[dir="rtl"] .mic-btn { right: auto; left: 8px; }
+.mic-btn:hover { background: var(--green-light); }
+.mic-btn.listening { background: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(192,57,43,0.4); } 50% { box-shadow: 0 0 0 8px rgba(192,57,43,0); } }
+
+.section-header {
+  padding: 0 16px 8px; display: flex; align-items: center; justify-content: space-between;
+}
+.section-title { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 700; }
+body.lang-ur .section-title { letter-spacing: 0; }
+
+.customer-list { padding: 0 12px; flex: 1; padding-bottom: 80px; }
+.customer-card {
+  background: var(--white); border-radius: var(--radius);
+  margin-bottom: 10px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  border: 1.5px solid transparent;
+  animation: fadeIn 0.3s ease;
+}
+.customer-card:hover, .customer-card:active { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--cream-dark); }
+@keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+.avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--green-mid));
+  color: var(--gold); font-size: 1.2rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; text-transform: uppercase; font-family: var(--font-en);
+}
+.customer-info { flex: 1; min-width: 0; }
+.customer-name { font-size: 1rem; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.customer-phone { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+.customer-balance { text-align: right; flex-shrink: 0; }
+.balance-amount { font-size: 1.05rem; font-weight: 700; }
+.balance-amount.positive { color: var(--red); }
+.balance-amount.zero { color: var(--text-muted); }
+.balance-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; text-align: right; }
+
+.empty-state { text-align: center; padding: 60px 30px; color: var(--text-muted); }
+.empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 14px; opacity: 0.5; }
+.empty-state p { font-size: 0.95rem; line-height: 1.6; }
+
+.fab {
+  position: fixed; bottom: 24px; right: 24px; z-index: 200;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-light), var(--green));
+  border: none; color: var(--white); font-size: 1.8rem; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(13,74,46,0.35);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+html[dir="rtl"] .fab { right: auto; left: 24px; }
+.fab:hover { transform: scale(1.1) rotate(45deg); box-shadow: 0 6px 28px rgba(13,74,46,0.45); }
+
+#screen-detail { background: var(--cream); }
+.customer-profile-card {
+  background: linear-gradient(135deg, var(--green), var(--green-mid));
+  padding: 20px 18px 24px; position: relative; overflow: hidden;
+}
+.customer-profile-card::before {
+  content: ''; position: absolute; bottom: -40px; left: -40px;
+  width: 140px; height: 140px; border-radius: 50%;
+  border: 2px solid rgba(200,168,75,0.2);
+}
+.profile-name { color: var(--white); font-size: 1.3rem; font-weight: 700; }
+.profile-phone { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 4px; }
+.profile-address { color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-top: 3px; }
+.profile-balance-wrap { margin-top: 14px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
+.profile-balance-label { color: rgba(255,255,255,0.8); font-size: 0.85rem; }
+.profile-balance-amount { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+body.lang-ur .profile-balance-amount { font-family: var(--font-ur); }
+
+.action-row { display: flex; gap: 10px; padding: 14px 14px 6px; }
+.action-btn {
+  flex: 1; height: 46px; border-radius: var(--radius-sm);
+  border: none; cursor: pointer; font-size: 0.88rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all var(--transition); letter-spacing: 0.3px;
+  font-family: inherit;
+}
+.action-btn-purchase { background: var(--green); color: var(--white); }
+.action-btn-purchase:hover { background: var(--green-light); }
+.action-btn-payment { background: var(--gold); color: var(--green); }
+.action-btn-payment:hover { background: var(--gold-light); }
+.action-btn-edit { background: var(--cream-dark); color: var(--text); }
+.action-btn-edit:hover { background: #e5dcc4; }
+.action-btn-delete { background: #fde8e6; color: var(--red); }
+.action-btn-delete:hover { background: #fad0cc; }
+
+.tx-list { padding: 0 12px 80px; }
+.tx-date-group { margin-bottom: 4px; }
+.tx-date-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding: 8px 6px 4px; font-weight: 700; }
+body.lang-ur .tx-date-label { letter-spacing: 0; }
+.tx-card {
+  background: var(--white); border-radius: var(--radius);
+  margin-bottom: 8px; padding: 13px 14px;
+  box-shadow: var(--shadow); position: relative;
+  border-left: 4px solid transparent;
+  animation: fadeIn 0.25s ease;
+}
+.tx-card.purchase { border-left-color: var(--red); }
+.tx-card.payment { border-left-color: var(--green-light); }
+html[dir="rtl"] .tx-card { border-left: none; border-right: 4px solid transparent; }
+html[dir="rtl"] .tx-card.purchase { border-right-color: var(--red); }
+html[dir="rtl"] .tx-card.payment { border-right-color: var(--green-light); }
+.tx-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.tx-product { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.tx-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+.tx-amount { font-size: 1.05rem; font-weight: 700; text-align: right; flex-shrink: 0; }
+.tx-amount.purchase { color: var(--red); }
+.tx-amount.payment { color: var(--green-light); }
+.tx-actions { display: flex; gap: 6px; margin-top: 8px; justify-content: flex-end; }
+.tx-action-btn {
+  background: var(--cream-dark); border: none; border-radius: 16px;
+  padding: 4px 12px; font-size: 0.75rem; cursor: pointer; color: var(--text);
+  transition: background var(--transition); font-family: inherit; font-weight: 600;
+}
+.tx-action-btn:hover { background: #ddd5be; }
+.tx-action-btn.del { background: #fde8e6; color: var(--red); }
+.tx-action-btn.del:hover { background: #fad0cc; }
+.tx-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; font-style: italic; }
+.tx-type-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 10px; margin-bottom: 2px; letter-spacing: 0.5px;
+}
+body.lang-ur .tx-type-badge { letter-spacing: 0; }
+.tx-type-badge.purchase { background: #fde8e6; color: var(--red); }
+.tx-type-badge.payment { background: #e8f5ee; color: var(--green); }
+
+.print-btn {
+  background: var(--cream-dark); border: 1.5px solid #d5c9a8;
+  color: var(--text); border-radius: var(--radius-sm);
+  padding: 9px 16px; cursor: pointer; font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; gap: 6px; transition: all var(--transition);
+  font-family: inherit;
+}
+.print-btn:hover { background: #e5dcc4; }
+
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; animation: overlayIn 0.2s ease; }
+@keyframes overlayIn { from { opacity:0; } to { opacity:1; } }
+.modal {
+  background: var(--white); border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 580px; max-height: 92dvh;
+  overflow-y: auto; animation: modalUp 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+.modal.center-modal {
+  border-radius: 20px; align-self: center;
+  margin: 16px; max-height: 80dvh; width: calc(100% - 32px);
+}
+@keyframes modalUp { from { transform: translateY(60px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.modal-header {
+  padding: 18px 20px 14px; border-bottom: 1.5px solid var(--cream-dark);
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--white); z-index: 1;
+}
+.modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.modal-close {
+  width: 34px; height: 34px; border-radius: 50%; border: none;
+  background: var(--cream-dark); color: var(--text); font-size: 1.2rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+}
+.modal-close:hover { background: #ddd5be; }
+.modal-body { padding: 18px 20px 24px; }
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block; font-size: 0.82rem; font-weight: 700;
+  color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+body.lang-ur .form-label { letter-spacing: 0; text-transform: none; }
+.form-input {
+  width: 100%; height: 48px; padding: 0 14px;
+  border: 1.5px solid var(--cream-dark); border-radius: var(--radius-sm);
+  background: var(--cream); color: var(--text); font-size: 0.95rem;
+  outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+  font-family: inherit; appearance: none;
+}
+.form-input:focus { border-color: var(--green-light); background: var(--white); box-shadow: 0 0 0 3px rgba(22,104,64,0.1); }
+.form-input.error { border-color: var(--red); }
+textarea.form-input { height: 80px; padding: 12px 14px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-error { color: var(--red); font-size: 0.78rem; margin-top: 4px; display: none; }
+.form-error.show { display: block; }
+.form-total { background: var(--cream); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; }
+.form-total strong { color: var(--green); font-size: 1.1rem; }
+.form-actions { display: flex; gap: 10px; padding-top: 4px; }
+.btn-primary {
+  flex: 2; height: 50px; background: var(--green); color: var(--white);
+  border: none; border-radius: var(--radius-sm); font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: background var(--transition); font-family: inherit;
+}
+.btn-primary:hover { background: var(--green-light); }
+.btn-secondary {
+  flex: 1; height: 50px; background: var(--cream-dark); color: var(--text);
+  border: none; border-radius: var(--radius-sm); font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: background var(--transition); font-family: inherit;
+}
+.btn-secondary:hover { background: #ddd5be; }
+
+.settings-section { margin-bottom: 22px; }
+.settings-section-title {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-muted); font-weight: 700; margin-bottom: 10px; padding-bottom: 6px;
+  border-bottom: 1.5px solid var(--cream-dark);
+}
+body.lang-ur .settings-section-title { letter-spacing: 0; }
+.settings-btn-row {
+  width: 100%; padding: 14px 16px; background: var(--cream);
+  border: 1.5px solid var(--cream-dark); border-radius: var(--radius-sm);
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  margin-bottom: 8px; transition: all var(--transition); text-align: left;
+  font-family: inherit; font-size: 0.95rem; color: var(--text);
+}
+html[dir="rtl"] .settings-btn-row { text-align: right; }
+.settings-btn-row:hover { background: #e8e0cc; border-color: #c9bfa5; }
+.settings-btn-row .s-icon { font-size: 1.3rem; flex-shrink: 0; }
+.settings-btn-row .s-text { flex: 1; }
+.settings-btn-row .s-label { font-weight: 700; font-size: 0.9rem; }
+.settings-btn-row .s-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.settings-btn-row.danger .s-label { color: var(--red); }
+.backup-info { font-size: 0.8rem; color: var(--text-muted); padding: 8px 0 0; text-align: center; }
+
+.confirm-modal { text-align: center; padding: 28px 22px 24px; }
+.confirm-icon { font-size: 3.2rem; margin-bottom: 12px; }
+.confirm-title { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.confirm-msg { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
+.confirm-actions { display: flex; gap: 10px; }
+
+#undo-toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: var(--white); border-radius: 28px;
+  padding: 12px 20px; display: none; align-items: center; gap: 14px;
+  z-index: 500; font-size: 0.88rem; box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s cubic-bezier(0.4,0,0.2,1);
+  min-width: 220px; max-width: calc(100vw - 40px);
+}
+#undo-toast.show { display: flex; }
+@keyframes toastIn { from { transform: translateX(-50%) translateY(20px); opacity:0; } to { transform: translateX(-50%) translateY(0); opacity:1; } }
+#undo-toast .undo-msg { flex: 1; }
+#undo-toast .undo-btn {
+  background: var(--gold); color: var(--green); border: none;
+  border-radius: 16px; padding: 6px 14px; cursor: pointer; font-weight: 700;
+  font-size: 0.82rem; transition: background var(--transition); font-family: inherit;
+}
+#undo-toast .undo-btn:hover { background: var(--gold-light); }
+
+#notif-toast {
+  position: fixed; top: 70px; right: 16px; z-index: 600;
+  background: var(--green); color: var(--white); border-radius: var(--radius-sm);
+  padding: 10px 16px; font-size: 0.85rem; display: none;
+  box-shadow: var(--shadow-lg); max-width: 280px;
+  animation: slideFromRight 0.3s ease;
+}
+html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFromLeft; }
+#notif-toast.show { display: block; }
+#notif-toast.error { background: var(--red); }
+@keyframes slideFromRight { from { transform: translateX(20px); opacity:0; } to { transform: translateX(0); opacity:1; } }
+@keyframes slideFromLeft { from { transform: translateX(-20px); opacity:0; } to { transform: translateX(0); opacity:1; } }
+
+@media print {
+  body * { visibility: hidden; }
+  #print-area, #print-area * { visibility: visible; }
+  #print-area { position: fixed; top: 0; left: 0; width: 100%; background: white; padding: 20px; }
+}
+#print-area { display: none; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 3px; }
+
+.loading-wrap { display: flex; align-items: center; justify-content: center; padding: 40px; }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--cream-dark); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.text-muted { color: var(--text-muted); }
+.gap-row { display: flex; gap: 8px; align-items: center; }
+.divider { height: 1.5px; background: var(--cream-dark); margin: 14px 0; }
+</style>
+</head>
+<body>
+<div class="pattern-bg"></div>
+
+<div id="offline-banner">📡 <span data-t="offline"></span></div>
+
+<div id="screen-na" class="screen">
+  <div class="logo">☪ Digital Khata</div>
+  <div class="lock-icon">🔒</div>
+  <h2 data-t="notAuthorized"></h2>
+  <p data-t="notAuthorizedMsg"></p>
+</div>
+
+<div id="screen-dashboard" class="screen">
+  <header class="app-header">
+    <div class="header-left">
+      <span class="header-title shop-name" id="header-shop-name"></span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn lang-btn" id="lang-toggle-btn" onclick="toggleLang()">EN / اردو</button>
+      <button class="icon-btn settings-btn" onclick="openSettings()">⚙️</button>
+    </div>
+  </header>
+
+  <div id="backup-reminder">
+    <div class="backup-text" data-t="autoBackupMsg"></div>
+    <div class="backup-btns">
+      <button class="btn-backup-now" data-t="backupNow" onclick="exportData(); dismissBackupReminder()"></button>
+      <button class="btn-dismiss" data-t="dismiss" onclick="dismissBackupReminder()"></button>
+    </div>
+  </div>
+
+  <div class="total-card" style="margin-top:16px;">
+    <div class="label" data-t="totalReceivable"></div>
+    <div class="amount" id="total-receivable">₨ 0</div>
+    <div class="customer-count" id="customer-count-text"></div>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="search-input" type="search" autocomplete="off" oninput="onSearch(this.value)" data-t-placeholder="searchPlaceholder">
+    <button class="mic-btn" id="mic-btn" onclick="startVoice()">🎙️</button>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title" data-t="customers"></span>
+    <button class="print-btn" onclick="printAllCustomers()" style="padding:6px 12px;font-size:0.78rem;">🖨️ <span data-t="print"></span></button>
+  </div>
+  <div class="customer-list" id="customer-list">
+    <div class="loading-wrap"><div class="spinner"></div></div>
+  </div>
+
+  <button class="fab" onclick="openCustomerModal()" title="Add Customer">＋</button>
+</div>
+
+<div id="screen-detail" class="screen">
+  <header class="app-header">
+    <div class="header-left">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <span class="header-title shop-name" id="detail-cust-name-header" style="max-width:200px;"></span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn settings-btn" onclick="openSettings()">⚙️</button>
+    </div>
+  </header>
+
+  <div class="customer-profile-card" id="profile-card">
+    <div class="profile-name" id="profile-name"></div>
+    <div class="profile-phone" id="profile-phone"></div>
+    <div class="profile-address" id="profile-address"></div>
+    <div class="profile-balance-wrap">
+      <span class="profile-balance-label" data-t="balance"></span>
+      <span class="profile-balance-amount" id="profile-balance">₨ 0</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="action-btn action-btn-purchase" onclick="openTxModal('purchase')">🛒 <span data-t="recordPurchase"></span></button>
+    <button class="action-btn action-btn-payment" onclick="openTxModal('payment')">💵 <span data-t="recordPayment"></span></button>
+  </div>
+  <div class="action-row" style="padding-top:0;">
+    <button class="action-btn action-btn-edit" onclick="openCustomerModal(true)">✏️ <span data-t="editCustomer"></span></button>
+    <button class="action-btn action-btn-delete" onclick="deleteCurrentCustomer()">🗑️ <span data-t="deleteCustomer"></span></button>
+    <button class="action-btn action-btn-edit" style="flex:0.8;background:#e8f0fe;color:#1a5276;" onclick="printReceipt()">🖨️ <span data-t="print"></span></button>
+  </div>
+
+  <div class="section-header" style="padding-top:10px;">
+    <span class="section-title" data-t="transactions"></span>
+  </div>
+  <div class="tx-list" id="tx-list">
+    <div class="loading-wrap"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- MODALS (identical to previous version, unchanged for brevity) -->
+<div class="modal-overlay" id="modal-customer">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="customer-modal-title" data-t="addCustomer"></span>
+      <button class="modal-close" onclick="closeModal('modal-customer')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" data-t="customerName"></label>
+        <input class="form-input" id="cust-name" type="text" maxlength="100" autocomplete="off">
+        <div class="form-error" id="err-cust-name" data-t="nameRequired"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="phone"></label>
+        <input class="form-input" id="cust-phone" type="tel" maxlength="20" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="address"></label>
+        <textarea class="form-input" id="cust-address" maxlength="200" rows="2"></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" data-t="cancel" onclick="closeModal('modal-customer')"></button>
+        <button class="btn-primary" data-t="save" onclick="saveCustomer()"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-tx">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="tx-modal-title"></span>
+      <button class="modal-close" onclick="closeModal('modal-tx')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="tx-purchase-fields">
+        <div class="form-group">
+          <label class="form-label" data-t="productName"></label>
+          <input class="form-input" id="tx-product" type="text" maxlength="100" autocomplete="off">
+          <div class="form-error" id="err-tx-product" data-t="nameRequired"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" data-t="quantity"></label>
+            <input class="form-input" id="tx-qty" type="number" min="0.01" step="0.01" oninput="updateTxTotal()">
+            <div class="form-error" id="err-tx-qty" data-t="quantityRequired"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" data-t="unitPrice"></label>
+            <input class="form-input" id="tx-price" type="number" min="0.01" step="0.01" oninput="updateTxTotal()">
+            <div class="form-error" id="err-tx-price" data-t="priceRequired"></div>
+          </div>
+        </div>
+        <div class="form-total" id="tx-total-display" style="margin-top:10px;">
+          <span data-t="totalAmount"></span>: <strong id="tx-total-val">₨ 0</strong>
+        </div>
+      </div>
+      <div id="tx-payment-fields" style="display:none;">
+        <div class="form-group">
+          <label class="form-label" data-t="paymentAmount"></label>
+          <input class="form-input" id="tx-amount" type="number" min="0.01" step="0.01">
+          <div class="form-error" id="err-tx-amount" data-t="amountRequired"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="date"></label>
+        <input class="form-input" id="tx-date" type="date">
+        <div class="form-error" id="err-tx-date" data-t="dateRequired"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="note"></label>
+        <input class="form-input" id="tx-note" type="text" maxlength="200" autocomplete="off">
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" data-t="cancel" onclick="closeModal('modal-tx')"></button>
+        <button class="btn-primary" data-t="save" onclick="saveTx()"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" data-t="settings"></span>
+      <button class="modal-close" onclick="closeModal('modal-settings')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <div class="settings-section-title" data-t="backupReminder"></div>
+        <button class="settings-btn-row" onclick="exportData()">
+          <span class="s-icon">📤</span>
+          <div class="s-text">
+            <div class="s-label" data-t="exportData"></div>
+            <div class="s-desc" id="last-backup-text"></div>
+          </div>
+        </button>
+        <button class="settings-btn-row" onclick="triggerImport()">
+          <span class="s-icon">📥</span>
+          <div class="s-text">
+            <div class="s-label" data-t="importData"></div>
+            <div class="s-desc" data-t="importWarning"></div>
+          </div>
+        </button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:var(--red);">⚠️ Danger Zone</div>
+        <button class="settings-btn-row danger" onclick="resetAllData()">
+          <span class="s-icon">🗑️</span>
+          <div class="s-text">
+            <div class="s-label" data-t="resetData"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal center-modal">
+    <div class="confirm-modal">
+      <div class="confirm-icon" id="confirm-icon">⚠️</div>
+      <div class="confirm-title" id="confirm-title"></div>
+      <div class="confirm-msg" id="confirm-msg"></div>
+      <div class="confirm-actions">
+        <button class="btn-secondary" id="confirm-cancel-btn" data-t="cancel" onclick="closeModal('modal-confirm')"></button>
+        <button class="btn-primary" id="confirm-ok-btn" style="background:var(--red);" onclick="confirmOk()"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-import">
+  <div class="modal center-modal">
+    <div class="confirm-modal">
+      <div class="confirm-icon">📥</div>
+      <div class="confirm-title" data-t="mergeOrReplace"></div>
+      <div class="confirm-msg" data-t="importWarning"></div>
+      <div class="confirm-actions">
+        <button class="btn-secondary" data-t="merge" onclick="doImport('merge')"></button>
+        <button class="btn-primary" style="background:var(--red);" data-t="replace" onclick="doImport('replace')"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="undo-toast">
+  <span class="undo-msg" id="undo-msg"></span>
+  <button class="undo-btn" data-t="undo" onclick="undoLast()"></button>
+</div>
+
+<div id="notif-toast" id="notif-toast"></div>
+<div id="print-area"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  LANGUAGE TEXTS
+// ═══════════════════════════════════════════════════════
+const T = {
+  en: {
+    appName:'Digital Khata', notAuthorized:'Not Authorized',
+    notAuthorizedMsg:'Please open this app with a valid shop link (e.g., ?shop=my-shop-name)',
+    totalReceivable:'Total Receivable', searchPlaceholder:'Search customers...',
+    addCustomer:'Add Customer', noCustomers:'No customers yet. Tap + to add your first customer!',
+    balance:'Balance', recordPurchase:'Record Purchase', recordPayment:'Record Payment',
+    editCustomer:'Edit Customer', deleteCustomer:'Delete Customer',
+    customerName:'Customer Name', phone:'Phone Number', address:'Address',
+    save:'Save', cancel:'Cancel', delete:'Delete', edit:'Edit', undo:'Undo', print:'Print',
+    settings:'Settings', exportData:'Export Data', importData:'Import Data',
+    resetData:'Reset All Data', backupReminder:'Data Backup',
+    lastBackup:'Last backup', never:'Never', offline:'You are offline — changes saved locally',
+    online:'Back online',
+    confirmDelete:'Are you sure?', confirmDeleteCustomer:'Delete this customer and ALL their transactions? This cannot be undone.',
+    confirmDeleteTransaction:'Delete this transaction?',
+    confirmReset:'Reset all data? This will permanently delete everything for this shop.',
+    confirmResetFinal:'Type RESET to confirm permanent deletion.',
+    mergeOrReplace:'Import Mode:', merge:'Merge', replace:'Replace',
+    productName:'Product Name', quantity:'Quantity', unitPrice:'Unit Price (₨)',
+    totalAmount:'Total Amount', paymentAmount:'Payment Amount (₨)',
+    date:'Date', note:'Note (optional)', purchase:'Purchase', payment:'Payment',
+    transactions:'Transactions', noTransactions:'No transactions recorded yet.',
+    back:'Back', nameRequired:'Name is required', quantityRequired:'Quantity must be greater than 0',
+    priceRequired:'Price must be greater than 0', amountRequired:'Amount must be greater than 0',
+    dateRequired:'Date is required', importSuccess:'Data imported successfully ✓',
+    exportSuccess:'Data exported successfully ✓', undoDeleted:'Deletion undone ✓',
+    dr:'Dr', cr:'Cr', customers:'Customers', today:'Today',
+    autoBackupMsg:'You haven\'t backed up in 7+ days. Export your data to stay safe.',
+    backupNow:'Backup Now', dismiss:'Dismiss',
+    importWarning:'Merge adds new records; Replace deletes all existing data first.',
+    shop:'Shop', receiptTitle:'Customer Account Statement', printDate:'Printed on',
+    totalBalance:'Total Balance', type:'Type',
+    voiceNotSupported:'Voice search not supported in this browser',
+    listening:'Listening... speak now', deleteOk:'Delete', custCount:'{n} customers',
+    noResults:'No customers found', resetOk:'Yes, Reset',
+  },
+  ur: {
+    appName:'ڈیجیٹل کھاتہ', notAuthorized:'اجازت نہیں',
+    notAuthorizedMsg:'براہ کرم درست دکان لنک کے ساتھ یہ ایپ کھولیں (مثال: ?shop=dukan-ka-naam)',
+    totalReceivable:'کل وصولی', searchPlaceholder:'گاہک تلاش کریں...',
+    addCustomer:'نیا گاہک شامل کریں', noCustomers:'ابھی کوئی گاہک نہیں۔ + دبائیں اور پہلا گاہک شامل کریں!',
+    balance:'بقایا', recordPurchase:'خریداری درج کریں', recordPayment:'ادائیگی درج کریں',
+    editCustomer:'گاہک میں ترمیم', deleteCustomer:'گاہک حذف کریں',
+    customerName:'گاہک کا نام', phone:'فون نمبر', address:'پتہ',
+    save:'محفوظ کریں', cancel:'منسوخ', delete:'حذف کریں', edit:'ترمیم', undo:'واپس لائیں', print:'پرنٹ',
+    settings:'ترتیبات', exportData:'ڈیٹا برآمد کریں', importData:'ڈیٹا درآمد کریں',
+    resetData:'تمام ڈیٹا مٹائیں', backupReminder:'ڈیٹا بیک اپ',
+    lastBackup:'آخری بیک اپ', never:'کبھی نہیں', offline:'آپ آف لائن ہیں — تبدیلیاں مقامی طور پر محفوظ',
+    online:'دوبارہ آن لائن',
+    confirmDelete:'کیا آپ یقین سے کرنا چاہتے ہیں؟',
+    confirmDeleteCustomer:'یہ گاہک اور ان کے تمام لین دین مستقل حذف ہو جائیں گے؟',
+    confirmDeleteTransaction:'یہ لین دین حذف کریں؟',
+    confirmReset:'تمام ڈیٹا مٹائیں؟ یہ عمل واپس نہیں ہو سکتا۔',
+    confirmResetFinal:'تصدیق کے لیے RESET لکھیں۔',
+    mergeOrReplace:'درآمد کا طریقہ:', merge:'ضم کریں', replace:'تبدیل کریں',
+    productName:'مصنوعہ کا نام', quantity:'تعداد', unitPrice:'فی یونٹ قیمت (₨)',
+    totalAmount:'کل رقم', paymentAmount:'ادائیگی کی رقم (₨)',
+    date:'تاریخ', note:'نوٹ (اختیاری)', purchase:'خریداری', payment:'ادائیگی',
+    transactions:'لین دین', noTransactions:'ابھی کوئی لین دین نہیں۔',
+    back:'واپس', nameRequired:'نام ضروری ہے', quantityRequired:'تعداد صفر سے زیادہ ہونی چاہیے',
+    priceRequired:'قیمت صفر سے زیادہ ہونی چاہیے', amountRequired:'رقم صفر سے زیادہ ہونی چاہیے',
+    dateRequired:'تاریخ ضروری ہے', importSuccess:'ڈیٹا کامیابی سے درآمد ہو گیا ✓',
+    exportSuccess:'ڈیٹا کامیابی سے برآمد ہو گیا ✓', undoDeleted:'حذف واپس ہو گیا ✓',
+    dr:'ڈیبٹ', cr:'کریڈٹ', customers:'گاہک', today:'آج',
+    autoBackupMsg:'۷ دن سے زیادہ سے بیک اپ نہیں لیا گیا۔ ڈیٹا محفوظ رکھنے کے لیے برآمد کریں۔',
+    backupNow:'ابھی بیک اپ لیں', dismiss:'بند کریں',
+    importWarning:'ضم کرنے سے نئے ریکارڈ شامل ہوتے ہیں؛ تبدیل کرنے سے پہلے سب کچھ حذف ہو جاتا ہے۔',
+    shop:'دکان', receiptTitle:'گاہک کا حساب کتاب', printDate:'پرنٹ تاریخ',
+    totalBalance:'کل بقایا', type:'قسم',
+    voiceNotSupported:'یہ براؤزر آواز سے تلاش کی سہولت نہیں دیتا',
+    listening:'سن رہا ہے... ابھی بولیں', deleteOk:'حذف کریں', custCount:'{n} گاہک',
+    noResults:'کوئی گاہک نہیں ملا', resetOk:'ہاں، مٹائیں',
+  }
+};
+
+let lang = localStorage.getItem('khataLang') || 'en';
+let shopKey = '';
+let db = null;
+let currentCustomerId = null;
+let undoStack = null;
+let undoTimer = null;
+let confirmCallback = null;
+let pendingImportData = null;
+let allCustomers = [];
+let searchQuery = '';
+let txEditId = null;
+let txEditType = null;
+let custEditId = null;
+
+function t(key) { return T[lang][key] || T.en[key] || key; }
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+  document.body.className = lang === 'ur' ? 'lang-ur' : '';
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.getAttribute('data-t');
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = t(key);
+    } else {
+      el.textContent = t(key);
+    }
+  });
+  document.querySelectorAll('[data-t-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-t-placeholder'));
+  });
+  const lb = document.getElementById('last-backup-text');
+  if (lb) {
+    const d = localStorage.getItem('khataLastBackup');
+    lb.textContent = d ? `${t('lastBackup')}: ${formatDate(d.split('T')[0])}` : `${t('lastBackup')}: ${t('never')}`;
+  }
+}
+
+function toggleLang() {
+  lang = lang === 'en' ? 'ur' : 'en';
+  localStorage.setItem('khataLang', lang);
+  applyLang();
+  renderDashboard();
+  if (currentCustomerId) renderTransactions(currentCustomerId);
+}
+
+function getShopKey() {
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('shop');
+  if (!raw) return '';
+  // sanitize: allow alphanumeric, underscore, and Urdu letters (keep as is)
+  const sanitized = raw.replace(/[^a-zA-Z0-9_\u0600-\u06FF]/g, '_');
+  return sanitized;
+}
+
+function formatShopName(key) {
+  return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('DigitalKhataDB', 2);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('customers')) {
+        const cs = db.createObjectStore('customers', { keyPath: 'id', autoIncrement: true });
+        cs.createIndex('shopKey', 'shopKey', { unique: false });
+      }
+      if (!db.objectStoreNames.contains('transactions')) {
+        const ts = db.createObjectStore('transactions', { keyPath: 'id', autoIncrement: true });
+        ts.createIndex('shopKey', 'shopKey', { unique: false });
+        ts.createIndex('customerId', 'customerId', { unique: false });
+        ts.createIndex('shopKey_customerId', ['shopKey','customerId'], { unique: false });
+      }
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+function dbGetAll(store, indexName, keyVal) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readonly');
+    const s = tx.objectStore(store);
+    const idx = s.index(indexName);
+    const req = idx.getAll(keyVal);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbPut(store, obj) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    const s = tx.objectStore(store);
+    const req = s.put(obj);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbDelete(store, id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    const s = tx.objectStore(store);
+    const req = s.delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbGet(store, id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readonly');
+    const s = tx.objectStore(store);
+    const req = s.get(id);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbClear(store) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    const s = tx.objectStore(store);
+    const req = s.clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function calcBalance(customerId) {
+  const txs = await dbGetAll('transactions', 'shopKey_customerId', [shopKey, customerId]);
+  let bal = 0;
+  for (const tx of txs) {
+    if (tx.type === 'purchase') bal += tx.totalAmount;
+    else if (tx.type === 'payment') bal -= tx.totalAmount;
+  }
+  return bal;
+}
+
+async function calcTotalReceivable() {
+  const customers = await dbGetAll('customers', 'shopKey', shopKey);
+  let total = 0;
+  for (const c of customers) {
+    total += await calcBalance(c.id);
+  }
+  return total;
+}
+
+function formatAmount(n) {
+  if (isNaN(n)) n = 0;
+  return '₨ ' + parseFloat(n).toLocaleString('en-PK', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthsUr = ['جنوری','فروری','مارچ','اپریل','مئی','جون','جولائی','اگست','ستمبر','اکتوبر','نومبر','دسمبر'];
+    if (lang === 'ur') return `${d} ${monthsUr[m-1]} ${y}`;
+    return `${String(d).padStart(2,'0')} ${months[m-1]} ${y}`;
+  } catch { return dateStr; }
+}
+
+function todayStr() {
+  const d = new Date();
+  return d.toISOString().split('T')[0];
+}
+
+function avatarChar(name) {
+  if (!name) return '?';
+  const clean = name.trim();
+  return clean.charAt(0).toUpperCase();
+}
+
+function showScreen(id, animate = true) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const scr = document.getElementById(id);
+  scr.classList.add('active');
+  if (animate && id !== 'screen-dashboard') scr.classList.add('slide-in');
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  currentCustomerId = null;
+  showScreen('screen-dashboard', false);
+}
+
+async function renderDashboard() {
+  try {
+    const customers = await dbGetAll('customers', 'shopKey', shopKey);
+    allCustomers = customers;
+    let total = 0;
+    const balances = {};
+    for (const c of customers) {
+      const b = await calcBalance(c.id);
+      balances[c.id] = b;
+      if (b > 0) total += b;
+    }
+    document.getElementById('total-receivable').textContent = formatAmount(total);
+    const countText = t('custCount').replace('{n}', customers.length);
+    document.getElementById('customer-count-text').textContent = countText;
+
+    const q = searchQuery.toLowerCase();
+    let filtered = customers;
+    if (q) {
+      filtered = customers.filter(c =>
+        (c.name||'').toLowerCase().includes(q) ||
+        (c.phone||'').includes(q) ||
+        (c.address||'').toLowerCase().includes(q)
+      );
+    }
+    filtered.sort((a,b) => (balances[b.id]||0) - (balances[a.id]||0));
+
+    const listEl = document.getElementById('customer-list');
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">${q ? '🔍' : '👥'}</div>
+        <p>${q ? t('noResults') : t('noCustomers')}</p>
+      </div>`;
+      return;
+    }
+    listEl.innerHTML = filtered.map(c => {
+      const bal = balances[c.id] || 0;
+      const balClass = bal > 0 ? 'positive' : 'zero';
+      const av = avatarChar(c.name);
+      return `<div class="customer-card" onclick="openDetail(${c.id})">
+        <div class="avatar">${av}</div>
+        <div class="customer-info">
+          <div class="customer-name">${esc(c.name)}</div>
+          <div class="customer-phone">${esc(c.phone || '—')}</div>
+        </div>
+        <div class="customer-balance">
+          <div class="balance-amount ${balClass}">${formatAmount(bal)}</div>
+          <div class="balance-label">${t('balance')}</div>
+        </div>
+      </div>`;
+    }).join('');
+    checkBackupReminder();
+  } catch(err) {
+    console.error('renderDashboard error:', err);
+    document.getElementById('customer-list').innerHTML = `<div class="empty-state"><p>⚠️ Error loading data</p></div>`;
+  }
+}
+
+function onSearch(val) {
+  searchQuery = val;
+  renderDashboard();
+}
+
+function checkBackupReminder() {
+  const last = localStorage.getItem('khataLastBackup');
+  const dismissed = localStorage.getItem('khataBackupDismissed');
+  const banner = document.getElementById('backup-reminder');
+  if (!last) {
+    banner.classList.add('show');
+    return;
+  }
+  if (dismissed && dismissed === last) { banner.classList.remove('show'); return; }
+  const daysSince = (Date.now() - new Date(last).getTime()) / 86400000;
+  if (daysSince >= 7) banner.classList.add('show');
+  else banner.classList.remove('show');
+}
+
+function dismissBackupReminder() {
+  const last = localStorage.getItem('khataLastBackup') || 'dismissed';
+  localStorage.setItem('khataBackupDismissed', last);
+  document.getElementById('backup-reminder').classList.remove('show');
+}
+
+async function openDetail(id) {
+  currentCustomerId = id;
+  const cust = await dbGet('customers', id);
+  if (!cust) return;
+  document.getElementById('detail-cust-name-header').textContent = cust.name;
+  document.getElementById('profile-name').textContent = cust.name;
+  document.getElementById('profile-phone').textContent = cust.phone ? '📞 ' + cust.phone : '';
+  document.getElementById('profile-address').textContent = cust.address ? '📍 ' + cust.address : '';
+  const bal = await calcBalance(id);
+  document.getElementById('profile-balance').textContent = formatAmount(bal);
+  document.getElementById('profile-balance').style.color = bal > 0 ? 'var(--gold)' : '#90ee90';
+  showScreen('screen-detail');
+  renderTransactions(id);
+}
+
+async function renderTransactions(customerId) {
+  try {
+    const txs = await dbGetAll('transactions', 'shopKey_customerId', [shopKey, customerId]);
+    txs.sort((a,b) => {
+      const dd = (b.date||'').localeCompare(a.date||'');
+      return dd !== 0 ? dd : (b.createdAt||0) - (a.createdAt||0);
+    });
+    let bal = 0;
+    for (const tx of txs) {
+      if (tx.type === 'purchase') bal += tx.totalAmount;
+      else bal -= tx.totalAmount;
+    }
+    const pbEl = document.getElementById('profile-balance');
+    if (pbEl) {
+      pbEl.textContent = formatAmount(bal);
+      pbEl.style.color = bal > 0 ? 'var(--gold)' : '#90ee90';
+    }
+    const listEl = document.getElementById('tx-list');
+    if (txs.length === 0) {
+      listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>${t('noTransactions')}</p></div>`;
+      return;
+    }
+    const groups = {};
+    for (const tx of txs) {
+      const key = tx.date || '0000-00-00';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(tx);
+    }
+    let html = '';
+    for (const [dateKey, group] of Object.entries(groups)) {
+      const isToday = dateKey === todayStr();
+      const dateLabel = isToday ? t('today') : formatDate(dateKey);
+      html += `<div class="tx-date-label">${dateLabel}</div>`;
+      for (const tx of group) {
+        const isPurchase = tx.type === 'purchase';
+        const badgeClass = isPurchase ? 'purchase' : 'payment';
+        let detail = '';
+        if (isPurchase) {
+          detail = `${tx.quantity} × ${formatAmount(tx.unitPrice)}`;
+        }
+        html += `<div class="tx-card ${badgeClass}">
+          <div class="tx-top">
+            <div>
+              <span class="tx-type-badge ${badgeClass}">${t(tx.type)}</span>
+              <div class="tx-product">${esc(isPurchase ? (tx.productName||'—') : t('payment'))}</div>
+              <div class="tx-meta">${detail}</div>
+            </div>
+            <div class="tx-amount ${badgeClass}">${isPurchase ? '+' : '-'} ${formatAmount(tx.totalAmount)}</div>
+          </div>
+          ${tx.note ? `<div class="tx-note">💬 ${esc(tx.note)}</div>` : ''}
+          <div class="tx-actions">
+            <button class="tx-action-btn" onclick="editTx(${tx.id})">✏️ ${t('edit')}</button>
+            <button class="tx-action-btn del" onclick="deleteTx(${tx.id})">🗑️ ${t('delete')}</button>
+          </div>
+        </div>`;
+      }
+    }
+    listEl.innerHTML = html;
+  } catch(err) {
+    console.error('renderTransactions error:', err);
+  }
+}
+
+function openCustomerModal(isEdit = false) {
+  custEditId = isEdit ? currentCustomerId : null;
+  const titleEl = document.getElementById('customer-modal-title');
+  titleEl.textContent = t(isEdit ? 'editCustomer' : 'addCustomer');
+  clearErrors(['err-cust-name']);
+  if (isEdit && currentCustomerId) {
+    dbGet('customers', currentCustomerId).then(c => {
+      if (!c) return;
+      document.getElementById('cust-name').value = c.name || '';
+      document.getElementById('cust-phone').value = c.phone || '';
+      document.getElementById('cust-address').value = c.address || '';
+    });
+  } else {
+    document.getElementById('cust-name').value = '';
+    document.getElementById('cust-phone').value = '';
+    document.getElementById('cust-address').value = '';
+  }
+  openModal('modal-customer');
+  setTimeout(() => document.getElementById('cust-name').focus(), 300);
+}
+
+async function saveCustomer() {
+  const name = document.getElementById('cust-name').value.trim();
+  clearErrors(['err-cust-name']);
+  if (!name) { showError('err-cust-name'); return; }
+  const phone = document.getElementById('cust-phone').value.trim();
+  const address = document.getElementById('cust-address').value.trim();
+  const obj = { shopKey, name, phone, address };
+  if (custEditId) {
+    obj.id = custEditId;
+    const existing = await dbGet('customers', custEditId);
+    obj.createdAt = existing.createdAt;
+  } else {
+    obj.createdAt = Date.now();
+  }
+  try {
+    await dbPut('customers', obj);
+    closeModal('modal-customer');
+    await renderDashboard();
+    if (custEditId && currentCustomerId === custEditId) {
+      await openDetail(custEditId);
+    }
+    showNotif(`✓ ${name}`);
+  } catch(err) {
+    console.error(err);
+    showNotif('⚠️ Error saving', true);
+  }
+}
+
+async function deleteCurrentCustomer() {
+  if (!currentCustomerId) return;
+  const cust = await dbGet('customers', currentCustomerId);
+  showConfirm('🗑️', t('confirmDelete'), `${t('confirmDeleteCustomer')}`, t('deleteOk'), async () => {
+    const txs = await dbGetAll('transactions', 'shopKey_customerId', [shopKey, currentCustomerId]);
+    undoStack = { type: 'deleteCustomer', customer: cust, transactions: txs };
+    for (const tx of txs) await dbDelete('transactions', tx.id);
+    await dbDelete('customers', currentCustomerId);
+    currentCustomerId = null;
+    showScreen('screen-dashboard', false);
+    await renderDashboard();
+    showUndoToast(t('undoDeleted'));
+  });
+}
+
+function openTxModal(type, tx = null) {
+  txEditId = tx ? tx.id : null;
+  txEditType = type;
+  document.getElementById('tx-modal-title').textContent = t(type === 'purchase' ? 'recordPurchase' : 'recordPayment');
+  clearErrors(['err-tx-product','err-tx-qty','err-tx-price','err-tx-amount','err-tx-date']);
+  const isPurchase = type === 'purchase';
+  document.getElementById('tx-purchase-fields').style.display = isPurchase ? '' : 'none';
+  document.getElementById('tx-payment-fields').style.display = isPurchase ? 'none' : '';
+  if (tx) {
+    if (isPurchase) {
+      document.getElementById('tx-product').value = tx.productName || '';
+      document.getElementById('tx-qty').value = tx.quantity || '';
+      document.getElementById('tx-price').value = tx.unitPrice || '';
+      updateTxTotal();
+    } else {
+      document.getElementById('tx-amount').value = tx.totalAmount || '';
+    }
+    document.getElementById('tx-date').value = tx.date || todayStr();
+    document.getElementById('tx-note').value = tx.note || '';
+  } else {
+    document.getElementById('tx-product').value = '';
+    document.getElementById('tx-qty').value = '';
+    document.getElementById('tx-price').value = '';
+    document.getElementById('tx-amount').value = '';
+    document.getElementById('tx-date').value = todayStr();
+    document.getElementById('tx-note').value = '';
+    document.getElementById('tx-total-val').textContent = '₨ 0';
+  }
+  openModal('modal-tx');
+}
+
+async function editTx(id) {
+  const tx = await dbGet('transactions', id);
+  if (!tx) return;
+  openTxModal(tx.type, tx);
+}
+
+function updateTxTotal() {
+  const qty = parseFloat(document.getElementById('tx-qty').value) || 0;
+  const price = parseFloat(document.getElementById('tx-price').value) || 0;
+  document.getElementById('tx-total-val').textContent = formatAmount(qty * price);
+}
+
+async function saveTx() {
+  const isPurchase = txEditType === 'purchase';
+  clearErrors(['err-tx-product','err-tx-qty','err-tx-price','err-tx-amount','err-tx-date']);
+  let valid = true;
+  let totalAmount = 0;
+  const date = document.getElementById('tx-date').value;
+  if (!date) { showError('err-tx-date'); valid = false; }
+  let obj = { shopKey, customerId: currentCustomerId, type: txEditType, date, note: document.getElementById('tx-note').value.trim(), createdAt: Date.now() };
+  if (isPurchase) {
+    const product = document.getElementById('tx-product').value.trim();
+    const qty = parseFloat(document.getElementById('tx-qty').value);
+    const price = parseFloat(document.getElementById('tx-price').value);
+    if (!product) { showError('err-tx-product'); valid = false; }
+    if (!qty || qty <= 0) { showError('err-tx-qty'); valid = false; }
+    if (!price || price <= 0) { showError('err-tx-price'); valid = false; }
+    if (!valid) return;
+    totalAmount = qty * price;
+    obj.productName = product;
+    obj.quantity = qty;
+    obj.unitPrice = price;
+    obj.totalAmount = totalAmount;
+  } else {
+    const amount = parseFloat(document.getElementById('tx-amount').value);
+    if (!amount || amount <= 0) { showError('err-tx-amount'); valid = false; }
+    if (!valid) return;
+    totalAmount = amount;
+    obj.totalAmount = totalAmount;
+    obj.productName = '';
+    obj.quantity = 0;
+    obj.unitPrice = 0;
+  }
+  if (txEditId) {
+    const existing = await dbGet('transactions', txEditId);
+    obj.id = txEditId;
+    obj.createdAt = existing.createdAt;
+  }
+  try {
+    await dbPut('transactions', obj);
+    closeModal('modal-tx');
+    await renderTransactions(currentCustomerId);
+    await renderDashboard();
+  } catch(err) {
+    console.error(err);
+    showNotif('⚠️ Error saving transaction', true);
+  }
+}
+
+async function deleteTx(id) {
+  showConfirm('🗑️', t('confirmDelete'), t('confirmDeleteTransaction'), t('deleteOk'), async () => {
+    const tx = await dbGet('transactions', id);
+    undoStack = { type: 'deleteTx', tx };
+    await dbDelete('transactions', id);
+    await renderTransactions(currentCustomerId);
+    await renderDashboard();
+    showUndoToast(t('undoDeleted'));
+  });
+}
+
+function showUndoToast(msg) {
+  const toast = document.getElementById('undo-toast');
+  document.getElementById('undo-msg').textContent = msg;
+  document.getElementById('undo-toast').querySelector('[data-t="undo"]').textContent = t('undo');
+  toast.classList.add('show');
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(() => { toast.classList.remove('show'); undoStack = null; }, 6000);
+}
+
+async function undoLast() {
+  if (!undoStack) return;
+  clearTimeout(undoTimer);
+  document.getElementById('undo-toast').classList.remove('show');
+  try {
+    if (undoStack.type === 'deleteTx') {
+      await dbPut('transactions', undoStack.tx);
+      if (currentCustomerId === undoStack.tx.customerId) await renderTransactions(currentCustomerId);
+      await renderDashboard();
+    } else if (undoStack.type === 'deleteCustomer') {
+      await dbPut('customers', undoStack.customer);
+      for (const tx of undoStack.transactions) await dbPut('transactions', tx);
+      await renderDashboard();
+    }
+    showNotif(t('undoDeleted'));
+  } catch(err) { showNotif('⚠️ Undo failed', true); }
+  undoStack = null;
+}
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function showConfirm(icon, title, msg, okLabel, cb) {
+  document.getElementById('confirm-icon').textContent = icon;
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  document.getElementById('confirm-ok-btn').textContent = okLabel;
+  document.getElementById('confirm-cancel-btn').textContent = t('cancel');
+  confirmCallback = cb;
+  openModal('modal-confirm');
+}
+
+function confirmOk() {
+  closeModal('modal-confirm');
+  if (confirmCallback) { confirmCallback(); confirmCallback = null; }
+}
+
+function clearErrors(ids) { ids.forEach(id => document.getElementById(id).classList.remove('show')); }
+function showError(id) { document.getElementById(id).classList.add('show'); }
+
+function openSettings() {
+  const d = localStorage.getItem('khataLastBackup');
+  const lb = document.getElementById('last-backup-text');
+  lb.textContent = d ? `${t('lastBackup')}: ${formatDate(d.split('T')[0])}` : `${t('lastBackup')}: ${t('never')}`;
+  openModal('modal-settings');
+}
+
+async function exportData() {
+  try {
+    const customers = await dbGetAll('customers', 'shopKey', shopKey);
+    const transactions = await dbGetAll('transactions', 'shopKey', shopKey);
+    const data = { shopKey, exportedAt: new Date().toISOString(), customers, transactions };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `khata-${shopKey}-${todayStr()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    const now = new Date().toISOString();
+    localStorage.setItem('khataLastBackup', now);
+    localStorage.removeItem('khataBackupDismissed');
+    checkBackupReminder();
+    showNotif(t('exportSuccess'));
+    closeModal('modal-settings');
+  } catch(err) {
+    console.error(err);
+    showNotif('⚠️ Export failed', true);
+  }
+}
+
+function triggerImport() { document.getElementById('import-file').click(); }
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      pendingImportData = JSON.parse(e.target.result);
+      closeModal('modal-settings');
+      openModal('modal-import');
+    } catch { showNotif('⚠️ Invalid JSON file', true); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+async function doImport(mode) {
+  closeModal('modal-import');
+  if (!pendingImportData) return;
+  try {
+    const { customers = [], transactions = [] } = pendingImportData;
+    if (mode === 'replace') {
+      const existCusts = await dbGetAll('customers', 'shopKey', shopKey);
+      const existTxs = await dbGetAll('transactions', 'shopKey', shopKey);
+      for (const c of existCusts) await dbDelete('customers', c.id);
+      for (const tx of existTxs) await dbDelete('transactions', tx.id);
+      for (const c of customers) { const obj = {...c, shopKey}; delete obj.id; await dbPut('customers', obj); }
+      for (const tx of transactions) { const obj = {...tx, shopKey}; delete obj.id; await dbPut('transactions', obj); }
+    } else {
+      const existCusts = await dbGetAll('customers', 'shopKey', shopKey);
+      const existTxCreatedAts = new Set((await dbGetAll('transactions', 'shopKey', shopKey)).map(t => t.createdAt));
+      const custIdMap = {};
+      for (const c of customers) {
+        const match = existCusts.find(e => e.name === c.name && e.phone === c.phone);
+        if (match) { custIdMap[c.id] = match.id; }
+        else {
+          const obj = {...c, shopKey}; const oldId = obj.id; delete obj.id;
+          const newId = await dbPut('customers', obj);
+          custIdMap[oldId] = newId;
+        }
+      }
+      for (const tx of transactions) {
+        if (!existTxCreatedAts.has(tx.createdAt)) {
+          const obj = {...tx, shopKey, customerId: custIdMap[tx.customerId] || tx.customerId};
+          delete obj.id;
+          await dbPut('transactions', obj);
+        }
+      }
+    }
+    pendingImportData = null;
+    await renderDashboard();
+    showNotif(t('importSuccess'));
+  } catch(err) {
+    console.error(err);
+    showNotif('⚠️ Import failed', true);
+    pendingImportData = null;
+  }
+}
+
+async function resetAllData() {
+  closeModal('modal-settings');
+  showConfirm('⚠️', t('confirmReset'), t('confirmResetFinal'), t('resetOk'), async () => {
+    const custs = await dbGetAll('customers', 'shopKey', shopKey);
+    const txs = await dbGetAll('transactions', 'shopKey', shopKey);
+    for (const c of custs) await dbDelete('customers', c.id);
+    for (const tx of txs) await dbDelete('transactions', tx.id);
+    await renderDashboard();
+    showNotif('✓ Reset complete');
+  });
+}
+
+let recognition = null;
+function startVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showNotif(t('voiceNotSupported'), true); return; }
+  if (!recognition) {
+    recognition = new SR();
+    recognition.continuous = false;
+    recognition.lang = lang === 'ur' ? 'ur-PK' : 'en-PK';
+    recognition.onresult = e => {
+      const text = e.results[0][0].transcript;
+      document.getElementById('search-input').value = text;
+      onSearch(text);
+      document.getElementById('mic-btn').classList.remove('listening');
+    };
+    recognition.onerror = () => document.getElementById('mic-btn').classList.remove('listening');
+    recognition.onend = () => document.getElementById('mic-btn').classList.remove('listening');
+  }
+  recognition.lang = lang === 'ur' ? 'ur-PK' : 'en-PK';
+  document.getElementById('mic-btn').classList.add('listening');
+  showNotif(t('listening'));
+  recognition.start();
+}
+
+async function printReceipt() {
+  if (!currentCustomerId) return;
+  const cust = await dbGet('customers', currentCustomerId);
+  const txs = await dbGetAll('transactions', 'shopKey_customerId', [shopKey, currentCustomerId]);
+  txs.sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  const bal = await calcBalance(currentCustomerId);
+  let rows = '';
+  for (const tx of txs) {
+    const isPurch = tx.type === 'purchase';
+    rows += `<tr style="border-bottom:1px solid #eee;">
+      <td style="padding:8px 10px;">${formatDate(tx.date)}</td>
+      <td style="padding:8px 10px;">${isPurch ? esc(tx.productName||'') : t('payment')}</td>
+      <td style="padding:8px 10px;text-align:center;">${isPurch ? tx.quantity : '—'}</td>
+      <td style="padding:8px 10px;text-align:right;color:${isPurch?'#c0392b':'#1d8a52'};">${isPurch?'+':'-'}${formatAmount(tx.totalAmount)}</td>
+     </tr>`;
+  }
+  const printDiv = document.getElementById('print-area');
+  printDiv.innerHTML = `
+    <div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #0d4a2e;padding-bottom:14px;margin-bottom:18px;">
+        <div>
+          <h1 style="margin:0;color:#0d4a2e;font-size:1.5rem;">${esc(formatShopName(shopKey))}</h1>
+          <p style="margin:4px 0 0;color:#666;font-size:0.85rem;">${t('receiptTitle')}</p>
+        </div>
+        <div style="text-align:right;font-size:0.8rem;color:#666;">
+          <div>${t('printDate')}: ${formatDate(todayStr())}</div>
+        </div>
+      </div>
+      <div style="background:#f5f5f5;padding:12px 16px;border-radius:8px;margin-bottom:18px;">
+        <strong style="font-size:1.1rem;">${esc(cust.name)}</strong>
+        ${cust.phone ? `<div style="color:#555;margin-top:3px;">📞 ${esc(cust.phone)}</div>` : ''}
+        ${cust.address ? `<div style="color:#555;margin-top:2px;">📍 ${esc(cust.address)}</div>` : ''}
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
+        <thead>
+          <tr style="background:#0d4a2e;color:white;">
+            <th style="padding:10px;text-align:left;">${t('date')}</th>
+            <th style="padding:10px;text-align:left;">${t('productName')}</th>
+            <th style="padding:10px;text-align:center;">${t('quantity')}</th>
+            <th style="padding:10px;text-align:right;">${t('totalAmount')}</th>
+           </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="margin-top:18px;text-align:right;border-top:2px solid #0d4a2e;padding-top:12px;">
+        <strong style="font-size:1.2rem;color:${bal>0?'#c0392b':'#1d8a52'};">${t('totalBalance')}: ${formatAmount(bal)}</strong>
+      </div>
+    </div>`;
+  printDiv.style.display = 'block';
+  window.print();
+  printDiv.style.display = 'none';
+}
+
+async function printAllCustomers() {
+  const customers = await dbGetAll('customers', 'shopKey', shopKey);
+  let rows = '';
+  for (const c of customers) {
+    const bal = await calcBalance(c.id);
+    rows += `<tr style="border-bottom:1px solid #eee;">
+      <td style="padding:8px 10px;">${esc(c.name)}</td>
+      <td style="padding:8px 10px;">${esc(c.phone||'—')}</td>
+      <td style="padding:8px 10px;">${esc(c.address||'—')}</td>
+      <td style="padding:8px 10px;text-align:right;color:${bal>0?'#c0392b':'#1d8a52'};">${formatAmount(bal)}</td>
+     </tr>`;
+  }
+  const printDiv = document.getElementById('print-area');
+  printDiv.innerHTML = `<div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;">
+    <h1 style="color:#0d4a2e;">${esc(formatShopName(shopKey))} — ${t('customers')}</h1>
+    <p style="color:#666;">${t('printDate')}: ${formatDate(todayStr())}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
+      <thead><tr style="background:#0d4a2e;color:white;">
+        <th style="padding:10px;">${t('customerName')}</th>
+        <th style="padding:10px;">${t('phone')}</th>
+        <th style="padding:10px;">${t('address')}</th>
+        <th style="padding:10px;text-align:right;">${t('balance')}</th>
+       </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+  printDiv.style.display = 'block';
+  window.print();
+  printDiv.style.display = 'none';
+}
+
+let notifTimer = null;
+function showNotif(msg, isError = false) {
+  const el = document.getElementById('notif-toast');
+  el.textContent = msg;
+  el.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+function updateOfflineBanner() {
+  const banner = document.getElementById('offline-banner');
+  const sp = banner.querySelector('[data-t="offline"]');
+  if (!navigator.onLine) {
+    sp.textContent = t('offline');
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+window.addEventListener('online', () => { updateOfflineBanner(); showNotif('✓ ' + t('online')); });
+window.addEventListener('offline', updateOfflineBanner);
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  const swCode = `
+const CACHE = 'khata-v1';
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll([location.pathname])));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(
+    keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+  )));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      const fetchReq = fetch(e.request).then(resp => {
+        if (resp && resp.status === 200 && resp.type === 'basic') {
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return resp;
+      }).catch(() => cached);
+      return cached || fetchReq;
+    })
+  );
+});`;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(() => {});
+}
+
+async function init() {
+  applyLang();
+  shopKey = getShopKey();
+
+  // If no shop parameter or empty after sanitization, show "Not Authorized" and stop everything
+  if (!shopKey) {
+    document.getElementById('screen-na').classList.add('active');
+    // Ensure no other screen is active
+    document.getElementById('screen-dashboard').classList.remove('active');
+    document.getElementById('screen-detail').classList.remove('active');
+    return;
+  }
+
+  // Valid shop key: hide not-authorized screen and show dashboard
+  document.getElementById('screen-na').classList.remove('active');
+  const shopDisplay = formatShopName(shopKey);
+  document.getElementById('header-shop-name').textContent = shopDisplay;
+  document.title = shopDisplay + ' | Digital Khata';
+
+  try {
+    db = await openDB();
+  } catch(err) {
+    console.error('DB Error:', err);
+    document.getElementById('screen-na').classList.add('active');
+    document.getElementById('screen-na').querySelector('p').textContent = '⚠️ Database error. Please try refreshing the page.';
+    return;
+  }
+
+  showScreen('screen-dashboard', false);
+  updateOfflineBanner();
+  await renderDashboard();
+  registerSW();
+}
+
+init();
+</script>
+</body>
+</html>
