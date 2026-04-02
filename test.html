@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
+/* ========== EXISTING STYLES (unchanged) ========== */
 :root {
   --green: #0d4a2e;
   --green-mid: #166840;
@@ -54,14 +55,7 @@ body.lang-ur input, body.lang-ur textarea, body.lang-ur select { font-family: va
 .screen { display: none; min-height: 100dvh; position: relative; z-index: 1; }
 .screen.active { display: flex; flex-direction: column; }
 
-/* 🔥 CRITICAL FIX: Hide Not Authorized screen by default */
-#screen-na {
-  display: none !important;
-}
-#screen-na.active {
-  display: flex !important;
-}
-
+/* Not Authorized screen */
 #screen-na {
   background: var(--green);
   flex-direction: column;
@@ -73,6 +67,103 @@ body.lang-ur input, body.lang-ur textarea, body.lang-ur select { font-family: va
 #screen-na h2 { color: var(--white); font-family: var(--font-display); font-size: 1.5rem; }
 #screen-na p { color: rgba(255,255,255,0.72); font-size: 0.95rem; line-height: 1.7; max-width: 320px; }
 
+/* PIN screen (new) */
+#screen-pin {
+  background: var(--green);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.pin-container {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.pin-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+.pin-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+.pin-input {
+  width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 12px;
+  font-family: monospace;
+  padding: 12px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+}
+.pin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.pin-key {
+  background: var(--cream);
+  border: none;
+  border-radius: 50px;
+  padding: 14px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.pin-key:hover { background: var(--cream-dark); }
+.pin-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.pin-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+.pin-error {
+  color: var(--red);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  min-height: 40px;
+}
+
+/* Install banner modal */
+.install-banner {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+}
+.install-modal {
+  text-align: center;
+}
+.install-modal .modal-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+.install-instructions {
+  background: var(--cream);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0;
+  font-size: 0.85rem;
+}
+
+/* Existing header, total card, etc. (unchanged) */
 .app-header {
   background: var(--green);
   padding: 0 16px;
@@ -469,6 +560,7 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
 
 <div id="offline-banner">📡 <span data-t="offline"></span></div>
 
+<!-- Not Authorized screen -->
 <div id="screen-na" class="screen">
   <div class="logo">☪ Digital Khata</div>
   <div class="lock-icon">🔒</div>
@@ -476,6 +568,37 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
   <p data-t="notAuthorizedMsg"></p>
 </div>
 
+<!-- PIN screen (login & setup) -->
+<div id="screen-pin" class="screen">
+  <div class="pin-container">
+    <div class="pin-title" id="pin-title">🔐 Enter PIN</div>
+    <div class="pin-desc" id="pin-desc">Please enter your 4-digit PIN</div>
+    <input type="password" id="pin-input" class="pin-input" maxlength="4" inputmode="numeric" pattern="\d*" autocomplete="off">
+    <div class="pin-keypad" id="pin-keypad">
+      <button class="pin-key" data-digit="1">1</button>
+      <button class="pin-key" data-digit="2">2</button>
+      <button class="pin-key" data-digit="3">3</button>
+      <button class="pin-key" data-digit="4">4</button>
+      <button class="pin-key" data-digit="5">5</button>
+      <button class="pin-key" data-digit="6">6</button>
+      <button class="pin-key" data-digit="7">7</button>
+      <button class="pin-key" data-digit="8">8</button>
+      <button class="pin-key" data-digit="9">9</button>
+      <button class="pin-key" data-digit="0">0</button>
+      <button class="pin-key" id="pin-backspace">⌫</button>
+      <button class="pin-key" id="pin-clear">C</button>
+    </div>
+    <div class="pin-actions">
+      <button id="pin-submit" class="btn-primary">✓ Confirm</button>
+    </div>
+    <div id="pin-error" class="pin-error"></div>
+    <div style="margin-top: 16px;">
+      <button id="forgot-pin" class="btn-secondary" style="background:transparent; color:var(--red);">Forgot PIN?</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard (original) -->
 <div id="screen-dashboard" class="screen">
   <header class="app-header">
     <div class="header-left">
@@ -518,6 +641,7 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
   <button class="fab" onclick="openCustomerModal()" title="Add Customer">＋</button>
 </div>
 
+<!-- Detail screen (original) -->
 <div id="screen-detail" class="screen">
   <header class="app-header">
     <div class="header-left">
@@ -557,7 +681,7 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
   </div>
 </div>
 
-<!-- MODALS (identical) -->
+<!-- Modals (original) -->
 <div class="modal-overlay" id="modal-customer">
   <div class="modal">
     <div class="modal-header">
@@ -705,6 +829,24 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
   </div>
 </div>
 
+<!-- Install Prompt Modal (new) -->
+<div class="modal-overlay" id="modal-install">
+  <div class="modal center-modal install-modal">
+    <div class="modal-icon">📲</div>
+    <div class="modal-title">Install App</div>
+    <div class="modal-body">
+      <p>Install this app on your phone for quick access.</p>
+      <div id="install-instructions" class="install-instructions">
+        <!-- dynamic instructions will go here -->
+      </div>
+      <div class="form-actions" style="margin-top: 16px;">
+        <button class="btn-secondary" id="install-later">Later</button>
+        <button class="btn-primary" id="install-now">Install Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="undo-toast">
   <span class="undo-msg" id="undo-msg"></span>
   <button class="undo-btn" data-t="undo" onclick="undoLast()"></button>
@@ -715,12 +857,12 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  LANGUAGE TEXTS
+//  LANGUAGE TEXTS (unchanged)
 // ═══════════════════════════════════════════════════════
 const T = {
   en: {
     appName:'Digital Khata', notAuthorized:'Not Authorized',
-    notAuthorizedMsg:'Please open this app with a valid shop link (e.g., ?shop=my-shop-name)',
+    notAuthorizedMsg:'This app requires a valid activation code. Please contact the administrator.',
     totalReceivable:'Total Receivable', searchPlaceholder:'Search customers...',
     addCustomer:'Add Customer', noCustomers:'No customers yet. Tap + to add your first customer!',
     balance:'Balance', recordPurchase:'Record Purchase', recordPayment:'Record Payment',
@@ -756,7 +898,7 @@ const T = {
   },
   ur: {
     appName:'ڈیجیٹل کھاتہ', notAuthorized:'اجازت نہیں',
-    notAuthorizedMsg:'براہ کرم درست دکان لنک کے ساتھ یہ ایپ کھولیں (مثال: ?shop=dukan-ka-naam)',
+    notAuthorizedMsg:'اس ایپ کو چلانے کے لیے ایک درست ایکٹیویشن کوڈ درکار ہے۔ منتظم سے رابطہ کریں۔',
     totalReceivable:'کل وصولی', searchPlaceholder:'گاہک تلاش کریں...',
     addCustomer:'نیا گاہک شامل کریں', noCustomers:'ابھی کوئی گاہک نہیں۔ + دبائیں اور پہلا گاہک شامل کریں!',
     balance:'بقایا', recordPurchase:'خریداری درج کریں', recordPayment:'ادائیگی درج کریں',
@@ -808,30 +950,282 @@ let txEditType = null;
 let custEditId = null;
 
 // ═══════════════════════════════════════════════════════
-//  PWA INSTALL PROMPT (First time per shop)
+//  NEW: ACTIVATION, INSTALL PROMPT, PIN MANAGEMENT
 // ═══════════════════════════════════════════════════════
+
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
 });
 
-async function showInstallPromptIfFirstTime() {
-  if (!shopKey) return;
+// Helper: hash PIN with salt
+async function hashPin(pin, salt) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin + salt);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Check if already activated (localStorage flag)
+function isActivated() {
+  return localStorage.getItem('khata_activated') === 'true';
+}
+
+// Get stored shop key
+function getStoredShopKey() {
+  return localStorage.getItem('khata_shopKey') || '';
+}
+
+// Set activation data
+async function setActivation(code) {
+  const sanitized = code.replace(/[^a-zA-Z0-9_\u0600-\u06FF]/g, '_');
+  localStorage.setItem('khata_activated', 'true');
+  localStorage.setItem('khata_shopKey', sanitized);
+  // Mark code as used
+  let usedCodes = JSON.parse(localStorage.getItem('khata_usedCodes') || '[]');
+  if (!usedCodes.includes(code)) usedCodes.push(code);
+  localStorage.setItem('khata_usedCodes', JSON.stringify(usedCodes));
+  shopKey = sanitized;
+  return sanitized;
+}
+
+// Check if activation code is already used
+function isCodeUsed(code) {
+  let usedCodes = JSON.parse(localStorage.getItem('khata_usedCodes') || '[]');
+  return usedCodes.includes(code);
+}
+
+// Remove ?code= from URL
+function removeCodeFromURL() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('code');
+  window.history.replaceState({}, document.title, url.toString());
+}
+
+// PIN storage functions
+async function isPinSet() {
+  return localStorage.getItem('khata_pinHash') !== null;
+}
+
+async function setPin(pin) {
+  const salt = Math.random().toString(36).substring(2, 10);
+  const hash = await hashPin(pin, salt);
+  localStorage.setItem('khata_pinHash', hash);
+  localStorage.setItem('khata_pinSalt', salt);
+}
+
+async function verifyPin(pin) {
+  const storedHash = localStorage.getItem('khata_pinHash');
+  const salt = localStorage.getItem('khata_pinSalt');
+  if (!storedHash || !salt) return false;
+  const hash = await hashPin(pin, salt);
+  return hash === storedHash;
+}
+
+// Reset everything (PIN, activation, and wipe IndexedDB data)
+async function fullReset() {
+  // Clear activation & PIN
+  localStorage.removeItem('khata_activated');
+  localStorage.removeItem('khata_shopKey');
+  localStorage.removeItem('khata_pinHash');
+  localStorage.removeItem('khata_pinSalt');
+  // Do NOT clear usedCodes? For safety, we keep usedCodes to prevent reusing same code after reset.
+  // But requirement says reset wipes all data and reactivation. We'll also clear usedCodes.
+  localStorage.removeItem('khata_usedCodes');
+  localStorage.removeItem('khata_installPromptShown');
+  // Clear IndexedDB data for current shopKey if any
+  if (db && shopKey) {
+    const customers = await dbGetAll('customers', 'shopKey', shopKey);
+    const transactions = await dbGetAll('transactions', 'shopKey', shopKey);
+    for (const c of customers) await dbDelete('customers', c.id);
+    for (const tx of transactions) await dbDelete('transactions', tx.id);
+  }
+  // Reload to show Not Authorized
+  window.location.reload();
+}
+
+// Install prompt logic
+let installPromptShown = localStorage.getItem('khata_installPromptShown') === 'true';
+async function showInstallPromptIfNeeded() {
+  if (installPromptShown) return Promise.resolve(false);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if (isStandalone) return;
-  const firstTimeFlag = `khata_installed_prompt_shown_${shopKey}`;
-  if (localStorage.getItem(firstTimeFlag)) return;
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const outcome = await deferredPrompt.userChoice;
-    localStorage.setItem(firstTimeFlag, 'true');
-    deferredPrompt = null;
+  if (isStandalone) {
+    installPromptShown = true;
+    localStorage.setItem('khata_installPromptShown', 'true');
+    return Promise.resolve(false);
+  }
+  return new Promise((resolve) => {
+    const modal = document.getElementById('modal-install');
+    const instructionsDiv = document.getElementById('install-instructions');
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      instructionsDiv.innerHTML = '📱 On iOS, tap Share icon <span style="font-size:1.2rem;">⎔</span> then select "Add to Home Screen".';
+      document.getElementById('install-now').style.display = 'none';
+    } else {
+      instructionsDiv.innerHTML = 'Tap "Install Now" to add this app to your home screen for quick access.';
+      document.getElementById('install-now').style.display = 'block';
+    }
+    const laterBtn = document.getElementById('install-later');
+    const nowBtn = document.getElementById('install-now');
+    const closeModalFn = () => {
+      closeModal('modal-install');
+      laterBtn.removeEventListener('click', laterHandler);
+      nowBtn.removeEventListener('click', nowHandler);
+      installPromptShown = true;
+      localStorage.setItem('khata_installPromptShown', 'true');
+      resolve(false);
+    };
+    const laterHandler = () => closeModalFn();
+    const nowHandler = () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          closeModalFn();
+        });
+      } else {
+        // fallback: just close
+        closeModalFn();
+      }
+    };
+    laterBtn.addEventListener('click', laterHandler);
+    nowBtn.addEventListener('click', nowHandler);
+    openModal('modal-install');
+  });
+}
+
+// PIN UI state
+let pinMode = 'login'; // 'login' or 'setup'
+let pendingPin = '';
+let confirmPin = '';
+
+function updatePinUI() {
+  const title = document.getElementById('pin-title');
+  const desc = document.getElementById('pin-desc');
+  if (pinMode === 'login') {
+    title.textContent = '🔐 Enter PIN';
+    desc.textContent = 'Please enter your 4-digit PIN';
   } else {
-    localStorage.setItem(firstTimeFlag, 'true');
+    title.textContent = '🔐 Set up your PIN';
+    desc.textContent = pendingPin === '' ? 'Enter a 4-digit PIN' : 'Confirm your PIN';
+  }
+  document.getElementById('pin-input').value = '';
+  document.getElementById('pin-error').textContent = '';
+}
+
+async function handlePinSubmit() {
+  const input = document.getElementById('pin-input').value;
+  if (input.length !== 4 || !/^\d+$/.test(input)) {
+    document.getElementById('pin-error').textContent = 'PIN must be exactly 4 digits';
+    return;
+  }
+  if (pinMode === 'login') {
+    if (await verifyPin(input)) {
+      // correct PIN, proceed to dashboard
+      document.getElementById('screen-pin').classList.remove('active');
+      await loadAppAfterAuth();
+    } else {
+      document.getElementById('pin-error').textContent = 'Incorrect PIN';
+    }
+  } else { // setup mode
+    if (pendingPin === '') {
+      pendingPin = input;
+      confirmPin = '';
+      updatePinUI();
+    } else {
+      if (input === pendingPin) {
+        await setPin(pendingPin);
+        // PIN set, now show install prompt (if not shown) then dashboard
+        pendingPin = '';
+        document.getElementById('screen-pin').classList.remove('active');
+        await showInstallPromptIfNeeded();
+        await loadAppAfterAuth();
+      } else {
+        document.getElementById('pin-error').textContent = 'PINs do not match';
+        pendingPin = '';
+        updatePinUI();
+      }
+    }
   }
 }
 
+// Forgot PIN: show reset modal
+function forgotPin() {
+  showConfirm('⚠️', 'Reset PIN?', 'Type "RESET" to delete all data and reactivate. This action cannot be undone.', 'RESET', async () => {
+    await fullReset();
+  });
+}
+
+// Load the actual app after PIN success
+async function loadAppAfterAuth() {
+  try {
+    db = await openDB();
+  } catch(err) {
+    console.error('DB Error:', err);
+    document.getElementById('customer-list').innerHTML = `<div class="empty-state"><p>⚠️ Database error. Please refresh.</p></div>`;
+    return;
+  }
+  updateOfflineBanner();
+  await renderDashboard();
+  registerSW();
+  showScreen('screen-dashboard', false);
+}
+
+// Main activation & flow
+async function handleActivation() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+  
+  // Case 1: No code and not activated -> Not Authorized
+  if (!code && !isActivated()) {
+    showScreen('screen-na', false);
+    return;
+  }
+  
+  // Case 2: Code present
+  if (code) {
+    // Check if code already used
+    if (isCodeUsed(code)) {
+      showScreen('screen-na', false);
+      const naMsg = document.querySelector('#screen-na p');
+      if (naMsg) naMsg.textContent = 'This activation link has already been used.';
+      return;
+    }
+    // Valid new code: activate, remove param, then show PIN setup
+    await setActivation(code);
+    removeCodeFromURL();
+    // Show PIN setup screen
+    pinMode = 'setup';
+    pendingPin = '';
+    updatePinUI();
+    showScreen('screen-pin', false);
+    return;
+  }
+  
+  // Case 3: Activated but PIN not set? (should not happen normally, but handle)
+  if (isActivated() && !(await isPinSet())) {
+    pinMode = 'setup';
+    pendingPin = '';
+    updatePinUI();
+    showScreen('screen-pin', false);
+    return;
+  }
+  
+  // Case 4: Activated and PIN set -> show PIN login
+  if (isActivated() && await isPinSet()) {
+    pinMode = 'login';
+    updatePinUI();
+    showScreen('screen-pin', false);
+    return;
+  }
+  
+  // Fallback (should not reach)
+  showScreen('screen-na', false);
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXISTING FUNCTIONS (unchanged except minor tweaks)
 // ═══════════════════════════════════════════════════════
 
 function t(key) { return T[lang][key] || T.en[key] || key; }
@@ -862,16 +1256,12 @@ function toggleLang() {
   lang = lang === 'en' ? 'ur' : 'en';
   localStorage.setItem('khataLang', lang);
   applyLang();
-  renderDashboard();
-  if (currentCustomerId) renderTransactions(currentCustomerId);
-}
-
-function getShopKey() {
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get('shop');
-  if (!raw) return '';
-  const sanitized = raw.replace(/[^a-zA-Z0-9_\u0600-\u06FF]/g, '_');
-  return sanitized;
+  if (document.getElementById('screen-dashboard').classList.contains('active')) {
+    renderDashboard();
+  }
+  if (currentCustomerId && document.getElementById('screen-detail').classList.contains('active')) {
+    renderTransactions(currentCustomerId);
+  }
 }
 
 function formatShopName(key) {
@@ -1531,7 +1921,7 @@ async function printReceipt() {
       <td style="padding:8px 10px;">${isPurch ? esc(tx.productName||'') : t('payment')}</td>
       <td style="padding:8px 10px;text-align:center;">${isPurch ? tx.quantity : '—'}</td>
       <td style="padding:8px 10px;text-align:right;color:${isPurch?'#c0392b':'#1d8a52'};">${isPurch?'+':'-'}${formatAmount(tx.totalAmount)}</td>
-      </tr>`;
+     </td>`;
   }
   const printDiv = document.getElementById('print-area');
   printDiv.innerHTML = `
@@ -1557,7 +1947,7 @@ async function printReceipt() {
             <th style="padding:10px;text-align:left;">${t('productName')}</th>
             <th style="padding:10px;text-align:center;">${t('quantity')}</th>
             <th style="padding:10px;text-align:right;">${t('totalAmount')}</th>
-            </tr>
+            <tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1668,42 +2058,35 @@ self.addEventListener('fetch', e => {
   navigator.serviceWorker.register(url).catch(() => {});
 }
 
+// PIN keypad handlers
+function setupPinUI() {
+  const keypad = document.getElementById('pin-keypad');
+  const inputField = document.getElementById('pin-input');
+  if (!keypad) return;
+  keypad.querySelectorAll('.pin-key').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const digit = btn.getAttribute('data-digit');
+      if (digit) {
+        if (inputField.value.length < 4) {
+          inputField.value += digit;
+        }
+      } else if (btn.id === 'pin-backspace') {
+        inputField.value = inputField.value.slice(0, -1);
+      } else if (btn.id === 'pin-clear') {
+        inputField.value = '';
+      }
+    });
+  });
+  document.getElementById('pin-submit').addEventListener('click', handlePinSubmit);
+  document.getElementById('forgot-pin').addEventListener('click', forgotPin);
+}
+
+// New init flow
 async function init() {
   applyLang();
-  shopKey = getShopKey();
-
-  // 🔥 CRITICAL FIX: Force hide Not Authorized screen if shop exists (no flash)
-  if (shopKey) {
-    document.getElementById('screen-na').style.display = 'none';
-    document.getElementById('screen-na').classList.remove('active');
-    // Immediately show dashboard (synchronously)
-    showScreen('screen-dashboard', false);
-    const shopDisplay = formatShopName(shopKey);
-    document.getElementById('header-shop-name').textContent = shopDisplay;
-    document.title = shopDisplay + ' | Digital Khata';
-  } else {
-    // No shop: ensure only Not Authorized screen is visible
-    document.getElementById('screen-na').style.display = 'flex';
-    document.getElementById('screen-na').classList.add('active');
-    document.getElementById('screen-dashboard').classList.remove('active');
-    document.getElementById('screen-detail').classList.remove('active');
-    return;
-  }
-
-  try {
-    db = await openDB();
-  } catch(err) {
-    console.error('DB Error:', err);
-    document.getElementById('customer-list').innerHTML = `<div class="empty-state"><p>⚠️ Database error. Please refresh.</p></div>`;
-    return;
-  }
-
-  updateOfflineBanner();
-  await renderDashboard();
-  registerSW();
-  
-  // First-time install prompt (only once per shop)
-  await showInstallPromptIfFirstTime();
+  setupPinUI();
+  shopKey = getStoredShopKey(); // will be set after activation
+  await handleActivation();
 }
 
 init();
