@@ -54,9 +54,17 @@ body.lang-ur input, body.lang-ur textarea, body.lang-ur select { font-family: va
 .screen { display: none; min-height: 100dvh; position: relative; z-index: 1; }
 .screen.active { display: flex; flex-direction: column; }
 
+/* 🔥 CRITICAL FIX: Hide Not Authorized screen by default */
+#screen-na {
+  display: none !important;
+}
+#screen-na.active {
+  display: flex !important;
+}
+
 #screen-na {
   background: var(--green);
-  display: flex; flex-direction: column;
+  flex-direction: column;
   align-items: center; justify-content: center;
   padding: 40px 24px; text-align: center; gap: 20px;
 }
@@ -549,7 +557,7 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
   </div>
 </div>
 
-<!-- MODALS (identical to previous version, unchanged for brevity) -->
+<!-- MODALS (identical) -->
 <div class="modal-overlay" id="modal-customer">
   <div class="modal">
     <div class="modal-header">
@@ -800,7 +808,7 @@ let txEditType = null;
 let custEditId = null;
 
 // ═══════════════════════════════════════════════════════
-//  NEW: PWA Install Prompt Handling (First-time per shop)
+//  PWA INSTALL PROMPT (First time per shop)
 // ═══════════════════════════════════════════════════════
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -810,23 +818,16 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 async function showInstallPromptIfFirstTime() {
   if (!shopKey) return;
-  // Check if already installed (standalone mode)
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   if (isStandalone) return;
-  
   const firstTimeFlag = `khata_installed_prompt_shown_${shopKey}`;
   if (localStorage.getItem(firstTimeFlag)) return;
-  
   if (deferredPrompt) {
-    // Show the install prompt
     deferredPrompt.prompt();
     const outcome = await deferredPrompt.userChoice;
-    // Mark as shown regardless of outcome (so it doesn't keep prompting)
     localStorage.setItem(firstTimeFlag, 'true');
     deferredPrompt = null;
   } else {
-    // No beforeinstallprompt event means browser doesn't support or already installed?
-    // Still mark as shown to avoid repeated attempts
     localStorage.setItem(firstTimeFlag, 'true');
   }
 }
@@ -869,7 +870,6 @@ function getShopKey() {
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('shop');
   if (!raw) return '';
-  // sanitize: allow alphanumeric, underscore, and Urdu letters (keep as is)
   const sanitized = raw.replace(/[^a-zA-Z0-9_\u0600-\u06FF]/g, '_');
   return sanitized;
 }
@@ -1531,7 +1531,7 @@ async function printReceipt() {
       <td style="padding:8px 10px;">${isPurch ? esc(tx.productName||'') : t('payment')}</td>
       <td style="padding:8px 10px;text-align:center;">${isPurch ? tx.quantity : '—'}</td>
       <td style="padding:8px 10px;text-align:right;color:${isPurch?'#c0392b':'#1d8a52'};">${isPurch?'+':'-'}${formatAmount(tx.totalAmount)}</td>
-     </td>`;
+      </tr>`;
   }
   const printDiv = document.getElementById('print-area');
   printDiv.innerHTML = `
@@ -1672,29 +1672,28 @@ async function init() {
   applyLang();
   shopKey = getShopKey();
 
-  // If no shop parameter or empty after sanitization, show "Not Authorized" and stop everything
-  if (!shopKey) {
+  // 🔥 CRITICAL FIX: Force hide Not Authorized screen if shop exists (no flash)
+  if (shopKey) {
+    document.getElementById('screen-na').style.display = 'none';
+    document.getElementById('screen-na').classList.remove('active');
+    // Immediately show dashboard (synchronously)
+    showScreen('screen-dashboard', false);
+    const shopDisplay = formatShopName(shopKey);
+    document.getElementById('header-shop-name').textContent = shopDisplay;
+    document.title = shopDisplay + ' | Digital Khata';
+  } else {
+    // No shop: ensure only Not Authorized screen is visible
+    document.getElementById('screen-na').style.display = 'flex';
     document.getElementById('screen-na').classList.add('active');
-    // Ensure no other screen is active
     document.getElementById('screen-dashboard').classList.remove('active');
     document.getElementById('screen-detail').classList.remove('active');
     return;
   }
 
-  // ✅ Valid shop key: immediately hide not-authorized screen and show dashboard (no flicker)
-  document.getElementById('screen-na').classList.remove('active');
-  const shopDisplay = formatShopName(shopKey);
-  document.getElementById('header-shop-name').textContent = shopDisplay;
-  document.title = shopDisplay + ' | Digital Khata';
-  
-  // Show dashboard immediately (with loading spinner) – this prevents any "Not Authorized" flash
-  showScreen('screen-dashboard', false);
-
   try {
     db = await openDB();
   } catch(err) {
     console.error('DB Error:', err);
-    // Show error but keep dashboard visible? Better to show error inside dashboard
     document.getElementById('customer-list').innerHTML = `<div class="empty-state"><p>⚠️ Database error. Please refresh.</p></div>`;
     return;
   }
@@ -1703,7 +1702,7 @@ async function init() {
   await renderDashboard();
   registerSW();
   
-  // ✅ First-time install prompt (only once per shop)
+  // First-time install prompt (only once per shop)
   await showInstallPromptIfFirstTime();
 }
 
