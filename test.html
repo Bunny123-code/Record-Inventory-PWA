@@ -702,7 +702,7 @@ html[dir="rtl"] #notif-toast { right: auto; left: 16px; animation-name: slideFro
   <button class="undo-btn" data-t="undo" onclick="undoLast()"></button>
 </div>
 
-<div id="notif-toast" id="notif-toast"></div>
+<div id="notif-toast"></div>
 <div id="print-area"></div>
 
 <script>
@@ -798,6 +798,40 @@ let searchQuery = '';
 let txEditId = null;
 let txEditType = null;
 let custEditId = null;
+
+// ═══════════════════════════════════════════════════════
+//  NEW: PWA Install Prompt Handling (First-time per shop)
+// ═══════════════════════════════════════════════════════
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+async function showInstallPromptIfFirstTime() {
+  if (!shopKey) return;
+  // Check if already installed (standalone mode)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isStandalone) return;
+  
+  const firstTimeFlag = `khata_installed_prompt_shown_${shopKey}`;
+  if (localStorage.getItem(firstTimeFlag)) return;
+  
+  if (deferredPrompt) {
+    // Show the install prompt
+    deferredPrompt.prompt();
+    const outcome = await deferredPrompt.userChoice;
+    // Mark as shown regardless of outcome (so it doesn't keep prompting)
+    localStorage.setItem(firstTimeFlag, 'true');
+    deferredPrompt = null;
+  } else {
+    // No beforeinstallprompt event means browser doesn't support or already installed?
+    // Still mark as shown to avoid repeated attempts
+    localStorage.setItem(firstTimeFlag, 'true');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 
 function t(key) { return T[lang][key] || T.en[key] || key; }
 
@@ -1497,7 +1531,7 @@ async function printReceipt() {
       <td style="padding:8px 10px;">${isPurch ? esc(tx.productName||'') : t('payment')}</td>
       <td style="padding:8px 10px;text-align:center;">${isPurch ? tx.quantity : '—'}</td>
       <td style="padding:8px 10px;text-align:right;color:${isPurch?'#c0392b':'#1d8a52'};">${isPurch?'+':'-'}${formatAmount(tx.totalAmount)}</td>
-     </tr>`;
+     </td>`;
   }
   const printDiv = document.getElementById('print-area');
   printDiv.innerHTML = `
@@ -1523,7 +1557,7 @@ async function printReceipt() {
             <th style="padding:10px;text-align:left;">${t('productName')}</th>
             <th style="padding:10px;text-align:center;">${t('quantity')}</th>
             <th style="padding:10px;text-align:right;">${t('totalAmount')}</th>
-           </tr>
+            </tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1546,7 +1580,7 @@ async function printAllCustomers() {
       <td style="padding:8px 10px;">${esc(c.phone||'—')}</td>
       <td style="padding:8px 10px;">${esc(c.address||'—')}</td>
       <td style="padding:8px 10px;text-align:right;color:${bal>0?'#c0392b':'#1d8a52'};">${formatAmount(bal)}</td>
-     </tr>`;
+      </tr>`;
   }
   const printDiv = document.getElementById('print-area');
   printDiv.innerHTML = `<div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;">
@@ -1558,7 +1592,7 @@ async function printAllCustomers() {
         <th style="padding:10px;">${t('phone')}</th>
         <th style="padding:10px;">${t('address')}</th>
         <th style="padding:10px;text-align:right;">${t('balance')}</th>
-       </tr></thead>
+        </tr></thead>
       <tbody>${rows}</tbody>
     </table>
   </div>`;
@@ -1647,25 +1681,30 @@ async function init() {
     return;
   }
 
-  // Valid shop key: hide not-authorized screen and show dashboard
+  // ✅ Valid shop key: immediately hide not-authorized screen and show dashboard (no flicker)
   document.getElementById('screen-na').classList.remove('active');
   const shopDisplay = formatShopName(shopKey);
   document.getElementById('header-shop-name').textContent = shopDisplay;
   document.title = shopDisplay + ' | Digital Khata';
+  
+  // Show dashboard immediately (with loading spinner) – this prevents any "Not Authorized" flash
+  showScreen('screen-dashboard', false);
 
   try {
     db = await openDB();
   } catch(err) {
     console.error('DB Error:', err);
-    document.getElementById('screen-na').classList.add('active');
-    document.getElementById('screen-na').querySelector('p').textContent = '⚠️ Database error. Please try refreshing the page.';
+    // Show error but keep dashboard visible? Better to show error inside dashboard
+    document.getElementById('customer-list').innerHTML = `<div class="empty-state"><p>⚠️ Database error. Please refresh.</p></div>`;
     return;
   }
 
-  showScreen('screen-dashboard', false);
   updateOfflineBanner();
   await renderDashboard();
   registerSW();
+  
+  // ✅ First-time install prompt (only once per shop)
+  await showInstallPromptIfFirstTime();
 }
 
 init();
